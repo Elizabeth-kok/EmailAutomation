@@ -1,0 +1,31 @@
+import smtplib
+import os
+import imghdr
+from email.message import EmailMessage
+from stat import FILE_ATTRIBUTE_NO_SCRUB_DATA
+
+EMAILADDRESS=os.environ.get("GMAILADDRESS")
+PASSWORD=os.environ.get("GMAILPW")
+
+contacts=["xxx@gmail.com", "aaa@gmail.com"]
+msg=EmailMessage()
+
+#Plain text, Adding attachment, HTML etc
+msg["Subject"]="KPI reports"
+msg["From"]=EMAILADDRESS
+msg["To"]=contacts
+msg.set_content("Sending excel kpi report screenshots for week 35")
+
+msg.add_alternative("""\
+    <!DOCTYPE html>
+    <html>
+        <body>
+            <h1 style="color:SlateGray;">This is an HTML Email!</h1>
+        </body>
+    </html>
+    """, subtype="html")
+
+with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+
+    smtp.login(EMAILADDRESS,PASSWORD)
+    smtp.send_message(msg)
